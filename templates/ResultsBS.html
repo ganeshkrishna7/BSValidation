@@ -1,0 +1,168 @@
+<html lang="en">
+<head>
+<style>
+body{ font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;}
+table.dataframe, .dataframe th, .dataframe td {
+  border: none;
+  border-bottom: 1px solid #C8C8C8;
+  border-collapse: collapse;
+  text-align:left;
+  padding: 10px;
+  margin-bottom: 40px;
+  font-size: 0.9em;
+}
+
+th {
+    background-color: #add8e6;
+    color: black;
+}
+
+tr:nth-child(odd)		{ background-color:#eee; }
+tr:nth-child(even)	{ background-color:#fff; }
+
+tr:hover            { background-color: #ffff99;}
+
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+</style>
+<script>
+    function openTab(evt, TabName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(TabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+</script>
+</head>
+<div>
+<div style="float: left">
+<image src="{{url_for('static',filename = 'aptivaa.png')}}" style="padding-right: 200px;" ></image>
+</div>
+<div>
+<h1>Ground Truth and Predicted B/S Comparison</h1>
+</div>
+</div>
+
+<form method="POST" action="{{url_for('callCompareBS')}}">
+  <i><p>Enter the Filename</p></i>
+  <input name="text" style="padding: 5px 20px;"">
+  <input type="submit" name="submit" style="background-color: #a9cdf7; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
+</form>
+
+<div style="text-align: left;">
+<a href="{{url_for('callComparePL')}}">
+  <input type="button" value="P&L Recon" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
+</a>
+<a href="{{url_for('aggregate')}}">
+  <input type="button" value="Aggregated Results" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
+</a>
+</div>
+
+<h2>{{filename}}</h2>
+
+<table style="border:1px solid black; border-collapse: collapse;" >
+  <tr style="border:1px solid black; border-collapse: collapse;">
+    <th style="border:1px solid black; border-collapse: collapse;">Year 1 Match Rate </th>
+    <th style="border:1px solid black; border-collapse: collapse;">Year 2 Match Rate </th>
+  </tr>
+  <tr style="border:1px solid black; border-collapse: collapse;">
+    <td style="border:1px solid black; border-collapse: collapse;"> {{matchrate_res1}}%</td>
+    <td style="border:1px solid black; border-collapse: collapse;">{{matchrate_res2}}%</td>
+  </tr>
+</table>
+<br>
+
+<div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'Y1')">Year1</button>
+    <button class="tablinks" onclick="openTab(event, 'Y2')">Year2</button>
+    <button class="tablinks" onclick="openTab(event, 'Full')">Complete BS</button>
+</div>   
+    <div id="Y1" class="tabcontent">
+    <h2>Year 1 Comparison</h2>
+    {{ ResultscompareBS_Y1|safe }}
+    </div>
+
+    <div id="Y2" class="tabcontent" style="display: none;">
+    <h2>Year 2 Comparison</h2>
+    {{ ResultscompareBS_Y2|safe }}
+    </div>
+
+    <div id="Full" class="tabcontent" style="display: none;">
+        <h2>Complete BS</h2>
+        {{ FullBS|safe }}
+    </div>
+
+<script>
+    var table1 = document.getElementById("FullBS"); 
+    console.log(table1.tBodies[0].rows[1].cells[3].innerHTML)
+    for (var r = 0, n = table1.tBodies[0].rows.length; r < n; r++) {
+            for (var c = 0, m = table1.tBodies[0].rows[r].cells.length; c<m; c++) {
+                if (table1.tBodies[0].rows[r].cells[3].innerHTML!=0)
+                {
+                console.log(table1.tBodies[0].rows[r].innerHTML)
+                table1.tBodies[0].rows[r].cells[3].style.background="#ff8a8a"
+                }
+            }
+            }
+
+    var table1 = document.getElementById("FullBS"); 
+    console.log(table1.tBodies[0].rows[1].cells[3].innerHTML)
+        for (var r = 0, n = table1.tBodies[0].rows.length; r < n; r++) {
+            for (var c = 0, m = table1.tBodies[0].rows[r].cells.length; c<m; c++) {
+                if (table1.tBodies[0].rows[r].cells[6].innerHTML!=0)
+                {
+                console.log(table1.tBodies[0].rows[r].innerHTML)
+                table1.tBodies[0].rows[r].cells[6].style.background="#a36a00"
+                }
+            }
+        }   
+
+    </script>
+
+    </html>

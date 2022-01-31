@@ -1,0 +1,44 @@
+<html lang="en">
+<style>
+.input {
+  background-color: #b7a6e7;
+  border: none;
+  color: black;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+</style>
+
+<body>
+<div>
+  <div style="float: left">
+  <image src="{{url_for('static',filename = 'aptivaa.png')}}" style="padding-right: 200px;" ></image>
+  </div>
+  <div>
+<h1>Ground Truth and Predicted FS Comparison</h1>
+</div>
+</div>
+<br>
+
+<form method="POST" action="{{url_for('callComparePL')}}" style="text-align: center;">
+    <i><p>Enter the Filename</p></i>
+    <input name="text" style="padding: 5px 20px;"">
+    <input type="submit" name="submit" style="background-color: #a9cdf7; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
+</form>
+
+<div style="text-align: center;">
+<a href="{{url_for('callCompareBS')}}">
+  <input type="button" value="B/S Recon" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
+</a>
+<a href="{{url_for('callComparePL')}}">
+  <input type="button" value="P&L Recon" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
+</a>
+<a href="{{url_for('aggregate')}}">
+  <input type="button" value="Aggregated Results" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
+</a>
+</div>
+</body>
+</html>

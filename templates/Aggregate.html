@@ -1,0 +1,170 @@
+<html lang="en">
+<head>
+<style>
+body{ font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;}
+table.dataframe, .dataframe th, .dataframe td {
+  border: none;
+  border-bottom: 1px solid #C8C8C8;
+  border-collapse: collapse;
+  text-align:left;
+  padding: 10px;
+  margin-bottom: 40px;
+  font-size: 0.9em;
+}
+
+th {
+    background-color: #add8e6;
+    color: black;
+}
+
+tr:nth-child(odd)		{ background-color:#eee; }
+tr:nth-child(even)	{ background-color:#fff; }
+
+tr:hover            { background-color: #ffff99;}
+
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+</style>
+<script>
+
+  function openTab(evt, TabName) {
+  // Declare all variables
+  var i, tabcontent, tablinks;
+    
+  // Get all elements with class="tabcontent" and hide them
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  // Get all elements with class="tablinks" and remove the class "active"
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  // Show the current tab, and add an "active" class to the button that opened the tab
+  document.getElementById(TabName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+</script>
+
+</head>
+<div>
+<div style="float: left">
+<image src="{{url_for('static',filename = 'aptivaa.png')}}" style="padding-right: 200px;" ></image>
+</div>
+<div>
+<h1>Ground Truth and Predicted P/L Comparison</h1>
+</div>
+</div>
+
+<form method="POST" action="{{url_for('callComparePL')}}" id='formPL' style="display: none;">
+  <i><p>Enter the Filename</p></i>
+  <input name="text" style="padding: 5px 20px;" id="filenamePL">
+  <input type="submit" name="submit" style="background-color: #a9cdf7; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
+</form>
+
+<form method="POST" action="{{url_for('callCompareBS')}}" id='formBS' style="display: none;">
+  <i><p>Enter the Filename</p></i>
+  <input name="text" style="padding: 5px 20px;" id="filenameBS">
+  <input type="submit" name="submit" style="background-color: #a9cdf7; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
+</form>
+
+<div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'PL')" id="defaultOpen">PL</button>
+    <button class="tablinks" onclick="openTab(event, 'BS')">BS</button>
+</div>  
+
+  
+    <div id="PL" class="tabcontent">
+    <h2>Year 1 Comparison</h2>
+    {{ PL_diff1|safe }}
+    </div>
+
+    <div id="BS" class="tabcontent">
+      <h2>Year 1 Comparison</h2>
+      {{ BS_diff1|safe }}
+    </div>
+
+  <script>
+    
+    window.onmouseover = e => {
+      if(e.target.tagName=="TH" & e.target.innerText!="LineItem"){
+      e.target.style.cursor='pointer';
+      }
+    } 
+
+  window.onclick = e => {
+    if(e.target.tagName=="TH" & e.target.innerText!="LineItem"){
+      if(document.getElementsByClassName('tablinks active')[0].innerHTML=="PL"){
+        document.getElementById('filenamePL').value=e.target.innerText;
+        document.getElementById("formPL").submit.click()}
+      else{
+        document.getElementById('filenameBS').value=e.target.innerText;
+        document.getElementById("formBS").submit.click()}
+    }
+  } 
+    var table1 = document.getElementById("AggPL")
+    for (var r = 0, n = table1.tBodies[0].rows.length; r < n; r++) {
+            for (var c = 1, m = table1.tBodies[0].rows[r].cells.length; c<m; c++) {
+                if (table1.tBodies[0].rows[r].cells[c].innerHTML!=0)
+                {
+                table1.tBodies[0].rows[r].cells[c].style.background="#ff8a8a"
+                }
+            }
+        }   
+      
+    var table1 = document.getElementById("AggBS")
+    for (var r = 0, n = table1.tBodies[0].rows.length; r < n; r++) {
+            for (var c = 1, m = table1.tBodies[0].rows[r].cells.length; c<m; c++) {
+                if (table1.tBodies[0].rows[r].cells[c].innerHTML!=0)
+                {
+                console.log(table1.tBodies[0].rows[r].innerHTML)
+                table1.tBodies[0].rows[r].cells[c].style.background="#ff8a8a"
+                }
+            }
+        }   
+    document.getElementById("defaultOpen").click();    
+</script>
+    
+    </html>
