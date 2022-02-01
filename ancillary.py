@@ -20,10 +20,10 @@ def subset(groundTruth,predicted):
     3) GroundTruth BS - subsetting BS from the Accounts sheet
     ''' 
 
-    groundTruth_PL=groundTruth.loc[23:85, 'LineItem':'Year2']
-    groundTruth_BS = groundTruth.loc[88:227, 'LineItem':'Year2']
-    groundTruth_BS=groundTruth_BS
-    groundTruth_PL=groundTruth_PL
+    groundTruth_PL=groundTruth.loc[:, 'LineItem':'Year2']
+    groundTruth_PL=groundTruth_PL.iloc[23:85,:]
+    groundTruth_BS = groundTruth.loc[:, 'LineItem':'Year2']
+    groundTruth_BS=groundTruth_BS.iloc[88:227,:]
 
     predicted.rename(columns={predicted.columns[4]: "LineItem",
     predicted.columns[5]: "Year1",
@@ -34,10 +34,10 @@ def subset(groundTruth,predicted):
     2) Predicted BS - subsetting BS from the Accounts sheet
 
     '''   
-    predicted_PL=predicted.loc[23:85, 'LineItem':'Year2']
-    predicted_BS = predicted.loc[88:227, 'LineItem':'Year2']
-    predicted_BS=predicted_BS
-    predicted_PL=predicted_PL
+    predicted_PL=predicted.loc[:, 'LineItem':'Year2']
+    predicted_PL=predicted_PL.iloc[23:85,:]
+    predicted_BS =predicted.loc[:, 'LineItem':'Year2']
+    predicted_BS=predicted_BS.iloc[88:227,:]
         
  
     return(groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL)
