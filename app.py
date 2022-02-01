@@ -9,6 +9,7 @@ app = Flask(__name__)
 
 @app.route("/", methods =["GET", "POST"])
 def getFile():
+  session['text']='002'
   if request.method == "POST":
     text = request.form['text']
     session['text']=text
@@ -108,7 +109,7 @@ def aggregate():
   groundTruth_BS['uniqueid']=groundTruth_BS['count']+groundTruth_BS['LineItem']
 
   PL_diff1=reshape_agg(groundTruth_PL,'Year1')
-  PL_diff2=reshape_agg(groundTruth_PL,'Year2')
+  PL_diff2=reshape_agg(groundTruth_PL,'Year2')  
   BS_diff1=reshape_agg(groundTruth_BS,'Year1')
   #BS_diff2=reshape_agg(groundTruth_BS,'Year2')
   #BS_diff1 = BS_diff1.to_dict()
