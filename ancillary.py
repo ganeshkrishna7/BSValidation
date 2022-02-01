@@ -22,11 +22,13 @@ def subset(groundTruth,predicted):
 
     groundTruth_PL=groundTruth.loc[23:85, 'LineItem':'Year2']
     groundTruth_BS = groundTruth.loc[88:227, 'LineItem':'Year2']
-
+    groundTruth_BS=groundTruth_BS
+    groundTruth_PL=groundTruth_PL
 
     predicted.rename(columns={predicted.columns[4]: "LineItem",
     predicted.columns[5]: "Year1",
     predicted.columns[6]: "Year2",}, inplace = True)
+
     '''
     1) Predicted PL - subsetting PL from the Accounts sheet
     2) Predicted BS - subsetting BS from the Accounts sheet
@@ -34,14 +36,16 @@ def subset(groundTruth,predicted):
     '''   
     predicted_PL=predicted.loc[23:85, 'LineItem':'Year2']
     predicted_BS = predicted.loc[88:227, 'LineItem':'Year2']
-         
+    predicted_BS=predicted_BS
+    predicted_PL=predicted_PL
+        
  
     return(groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL)
 
 
 def comparePL(groundTruth_PL,predicted_PL):
-    groundTruth_PL['Predicted_Year1']=predicted_PL['Year1']
-    groundTruth_PL['Predicted_Year2']=predicted_PL['Year2']
+    groundTruth_PL=groundTruth_PL.assign(Predicted_Year1=predicted_PL['Year1'])
+    groundTruth_PL=groundTruth_PL.assign(Predicted_Year2=predicted_PL['Year2'])
     groundTruth_PL=clean(groundTruth_PL)
 
     groundTruth_PL['Difference_Year1']=groundTruth_PL.loc[:,'Year1'] - groundTruth_PL['Predicted_Year1']
@@ -60,8 +64,9 @@ def comparePL(groundTruth_PL,predicted_PL):
     return(comparePL_df_y1,comparePL_df_y2,groundTruth_PL)
 
 def compareBS(groundTruth_BS,predicted_BS):
-    groundTruth_BS['Predicted_Year1']=predicted_BS['Year1']
-    groundTruth_BS['Predicted_Year2']=predicted_BS['Year2']
+    groundTruth_BS=groundTruth_BS.assign(Predicted_Year1=predicted_BS['Year1'])
+    groundTruth_BS=groundTruth_BS.assign(Predicted_Year2=predicted_BS['Year2'])
+
     groundTruth_BS=clean(groundTruth_BS)
 
     groundTruth_BS['Difference_Year1']=groundTruth_BS.loc[:,'Year1'] - groundTruth_BS['Predicted_Year1']
@@ -76,7 +81,6 @@ def compareBS(groundTruth_BS,predicted_BS):
     compareBS_df_y2=compareBS_df_y2[['LineItem','GroundTruth','Predicted','Difference']]
 
     groundTruth_BS.rename(columns={'Year1':'GroundTruth_Year1','Year2':'GroundTruth_Year2'}, inplace = True)
- 
     
     return(compareBS_df_y1,compareBS_df_y2,groundTruth_BS)
 
@@ -106,8 +110,14 @@ def subset_agg(groundTruth,predicted):
         3) GroundTruth BS - subsetting BS from the Accounts sheet
         ''' 
 
-        groundTruth_PL=groundTruth.loc[23:85, 'LineItem':'Year2']
-        groundTruth_BS = groundTruth.loc[88:227, 'LineItem':'Year2']
+        groundTruth_PL=groundTruth.loc[:, 'LineItem':'Year2']
+        groundTruth_PL=groundTruth_PL.iloc[23:85,:]
+        groundTruth_BS = groundTruth.loc[:, 'LineItem':'Year2']
+        groundTruth_BS=groundTruth_BS.iloc[88:227,:]
+
+        groundTruth_BS=groundTruth_BS.reset_index(drop=True)
+        groundTruth_PL=groundTruth_PL.reset_index(drop=True)
+
 
     if (groundTruth is None and predicted is not None) or (groundTruth is not None and predicted is not None):
         predicted.rename(columns={predicted.columns[4]: "LineItem",
@@ -118,8 +128,14 @@ def subset_agg(groundTruth,predicted):
         2) Predicted BS - subsetting BS from the Accounts sheet
 
         '''   
-        predicted_PL=predicted.loc[23:85, 'LineItem':'Year2']
-        predicted_BS = predicted.loc[88:227, 'LineItem':'Year2']
+        predicted_PL=predicted.loc[:, 'LineItem':'Year2']
+        predicted_PL=predicted_PL.iloc[23:85,:]
+        predicted_BS =predicted.loc[:, 'LineItem':'Year2']
+        predicted_BS=predicted_BS.iloc[88:227,:]
+
+        predicted_BS=predicted_BS.reset_index(drop=True)
+        predicted_PL=predicted_PL.reset_index(drop=True)
+
     
     if predicted is None:
         predicted_PL=None
@@ -130,7 +146,7 @@ def subset_agg(groundTruth,predicted):
  
     return(groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL)
 
-def clean_agg(df,Year):
+def reshape_agg(df,Year):
     df['filename']=df['filename'].str[0:3]
     if(Year=='Year1'):
         df1=df.pivot(index='uniqueid',columns='filename')[['Difference_Year1']].reset_index()
