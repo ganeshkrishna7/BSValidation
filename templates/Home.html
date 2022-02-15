@@ -1,4 +1,8 @@
 <html lang="en">
+<head>
+  <link rel="stylesheet" href="{{url_for('static',filename = 'semantic.min.css')}}">
+  <script src="{{url_for('static',filename = 'semantic.min.js')}}"></script>
+
 <style>
 .input {
   background-color: #b7a6e7;
@@ -11,34 +15,41 @@
   font-size: 16px;
 }
 </style>
+</head>
 
-<body>
-<div>
-  <div style="float: left">
-  <image src="{{url_for('static',filename = 'aptivaa.png')}}" style="padding-right: 200px;" ></image>
+<body style ="background-color: #F7F9F9; margin-left:1%; margin-right:1%;">
+  <div class="ui grid">
+    <div class="row">
+        <div style="float: left">
+          <image src="{{url_for('static',filename = 'cognext.png')}}" style="padding-right: 200px;" ></image>
+        </div>
+        
+    </div>
+
+
+    <div class="row">
+        <div class="ui six wide centered center aligned column" style="background-color: white;">
+          <h2>Ground Truth and Predicted FS Comparison</h2>
+          <form method="POST" action="{{url_for('callComparePL')}}" class="ui form" style="margin-top: 10%;">
+            <div class="inline field">
+              <label>Filename</label>
+              <input name="text">
+              <input type="submit" name="submit" class="ui secondary button" style="margin-left: 2%;">
+            </div>
+          </form>
+
+          <br>
+          <a href="{{url_for('callCompareBS')}}">
+            <input type="button" value="B/S Recon" class="ui teal button">
+          </a>
+          <a href="{{url_for('callComparePL')}}">
+            <input type="button" value="P&L Recon" class="ui teal button">
+          </a>
+          <a href="{{url_for('aggregate')}}">
+            <input type="button" value="Aggregated Results" class="ui teal button" style="margin-bottom: 10%;">
+          </a>
+        </div>
+      </div>
   </div>
-  <div>
-<h1>Ground Truth and Predicted FS Comparison</h1>
-</div>
-</div>
-<br>
-
-<form method="POST" action="{{url_for('callComparePL')}}" style="text-align: center;">
-    <i><p>Enter the Filename</p></i>
-    <input name="text" style="padding: 5px 20px;"">
-    <input type="submit" name="submit" style="background-color: #a9cdf7; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-</form>
-
-<div style="text-align: center;">
-<a href="{{url_for('callCompareBS')}}">
-  <input type="button" value="B/S Recon" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-</a>
-<a href="{{url_for('callComparePL')}}">
-  <input type="button" value="P&L Recon" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-</a>
-<a href="{{url_for('aggregate')}}">
-  <input type="button" value="Aggregated Results" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-</a>
-</div>
 </body>
 </html>

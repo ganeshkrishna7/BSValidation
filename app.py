@@ -9,7 +9,11 @@ app = Flask(__name__)
 
 @app.route("/", methods =["GET", "POST"])
 def getFile():
-  session['text']='002'
+  session['text']='002'+'.xlsx'
+  path_gt = "../groundTruthCorrected/"
+  path_pred = "../x_out_formulas/"
+  session['path_gt']=path_gt
+  session['path_pred']=path_pred
   if request.method == "POST":
     text = request.form['text']
     session['text']=text
@@ -17,13 +21,18 @@ def getFile():
 
 @app.route("/PL", methods =["GET", "POST"])
 def callComparePL():
+  path_gt = session.get('path_gt')
+  path_pred = session.get('path_pred')
+
   if request.method == "POST":
     text = request.form['text'] 
+    text=text+'.xlsx'
     session['text']=text 
   else:
     text = session.get('text')
-  groundTruth=pd.read_excel("../groundTruthCorrected/"+text+".xlsx",engine='openpyxl',sheet_name="Accounts",header=None)
-  predicted=pd.read_excel("../x_out_formulas/"+text+".XLSX",engine='openpyxl',sheet_name="ACCOUNTS",header=None)
+  groundTruth=pd.read_excel(os.path.join(path_gt,text),engine='openpyxl',sheet_name="Accounts",header=None)
+  text=text.replace("xlsx","XLSX")
+  predicted=pd.read_excel(os.path.join(path_pred,text),engine='openpyxl',sheet_name="ACCOUNTS",header=None)
   groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL=subset(groundTruth,predicted)
   ResultscomparePL_Y1,ResultscomparePL_Y2,groundTruth_PL=comparePL(groundTruth_PL,predicted_PL)
   groundTruth_PL=groundTruth_PL[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2']]
@@ -34,37 +43,48 @@ def callComparePL():
 
 @app.route("/BS", methods =["GET", "POST"])
 def callCompareBS():
+  path_gt = session.get('path_gt')
+  path_pred = session.get('path_pred')
+
   if request.method == "POST":
     text = request.form['text'] 
+    text=text+'.xlsx'
     session['text']=text 
   else:
     text = session.get('text')
-  groundTruth=pd.read_excel("../groundTruthCorrected/"+text+".xlsx",engine='openpyxl',sheet_name="Accounts",header=None)
-  predicted=pd.read_excel("../x_out_formulas/"+text+".XLSX",engine='openpyxl',sheet_name="ACCOUNTS",header=None)
-  groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL=subset_agg(groundTruth,predicted)
-  ResultscompareBS_Y1,ResultscompareBS_Y2,groundTruth_BS=compareBS(groundTruth_BS,predicted_BS)
-  groundTruth_BS=groundTruth_BS[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2']]
+  
+  groundTruth=pd.read_excel(os.path.join(path_gt,text),engine='openpyxl',sheet_name="Accounts",header=None)
+  text=text.replace("xlsx","XLSX")
+  predicted=pd.read_excel(os.path.join(path_pred,text),engine='openpyxl',sheet_name="ACCOUNTS",header=None)
+  groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL=subset(groundTruth,predicted)
+  ResultscompareBS_Y1,ResultscompareBS_Y2,groundTruth_BS,match2=compareBS(groundTruth_BS,predicted_BS)
+  groundTruth_BS=groundTruth_BS[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2','LineItem to be Mapped']]
 
   matchrate_res1=matchRate(groundTruth_BS,'Year1')
   matchrate_res2=matchRate(groundTruth_BS,'Year2')
   del groundTruth_BS['matchYear']
-  return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2)
+  if match2 is not None:
+    return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,match2=match2.to_html(index=False))
+  else:
+      return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2)
 
 @app.route("/aggregate", methods =["GET", "POST"])
 def aggregate():
-  path = "../groundTruthCorrected/"
-  xls_files_gt = glob.glob(os.path.join(path, "*.xlsx"))
-  xls_files_gt = [i.split("\\")[-1].lower() for i in xls_files_gt]
+  path_gt = session.get('path_gt')
+  path_pred = session.get('path_pred')
+
+  xls_files_gt = glob.glob(os.path.join(path_gt, "*.xlsx"))
+  xls_files_gt = [os.path.basename(i).lower() for i in xls_files_gt]
   xls_files_gt=set(xls_files_gt)
 
-  path = "../x_out_formulas/"
-  xls_files_pred = glob.glob(os.path.join(path, "*.XLSX"))
-  xls_files_pred = [i.split("\\")[-1].lower() for i in xls_files_pred]
+  
+  xls_files_pred = glob.glob(os.path.join(path_pred, "*.XLSX"))
+  xls_files_pred = [os.path.basename(i).lower() for i in xls_files_pred]
   xls_files_pred=set(xls_files_pred)
 
   xls_files=list(xls_files_gt.intersection(xls_files_pred))
-  xls_files_gt=["../groundTruthCorrected\\"+i for i in xls_files]
-  xls_files_pred=["../x_out_formulas\\"+i for i in xls_files]
+  xls_files_gt=[os.path.join(path_gt,i) for i in xls_files]
+  xls_files_pred=[os.path.join(path_pred,i) for i in xls_files]
   xls_files_pred=[i.replace("xlsx","XLSX") for i in xls_files_pred]
 
     
@@ -74,8 +94,8 @@ def aggregate():
     # read the xlsx file
     df = pd.read_excel(f,engine='openpyxl',sheet_name="Accounts",header=None)
     groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL=subset_agg(df,None)
-    groundTruth_BS['filename']=f.split("\\")[-1]
-    groundTruth_PL['filename']=f.split("\\")[-1]
+    groundTruth_BS['filename']=os.path.basename(f)
+    groundTruth_PL['filename']=os.path.basename(f)
     groundTruth_BS_final=pd.concat([groundTruth_BS_final,groundTruth_BS])
     groundTruth_PL_final=pd.concat([groundTruth_PL_final,groundTruth_PL])
   #.sort_values(by=['filename','LineItem']) 
@@ -88,8 +108,8 @@ def aggregate():
     # read the xlsx file
     df = pd.read_excel(f,engine='openpyxl',sheet_name="ACCOUNTS",header=None)
     groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL=subset_agg(None,df)
-    predicted_BS['filename']=f.split("\\")[-1]
-    predicted_PL['filename']=f.split("\\")[-1]
+    predicted_BS['filename']=os.path.basename(f)
+    predicted_PL['filename']=os.path.basename(f)
     predicted_BS_final=pd.concat([predicted_BS_final,predicted_BS])
     predicted_PL_final=pd.concat([predicted_PL_final,predicted_PL])
 
@@ -99,8 +119,8 @@ def aggregate():
   print(groundTruth_BS_final.shape[0])
   print(predicted_BS_final.shape[0])
   
-  ResultscomparePL_Y1,ResultscomparePL_Y2,groundTruth_PL=comparePL(groundTruth_PL_final,predicted_PL_final)
-  ResultscompareBS_Y1,ResultscompareBS_Y2,groundTruth_BS=compareBS(groundTruth_BS_final,predicted_BS_final)
+  ResultscomparePL_Y1,ResultscomparePL_Y2,groundTruth_PL=comparePL_agg(groundTruth_PL_final,predicted_PL_final)
+  ResultscompareBS_Y1,ResultscompareBS_Y2,groundTruth_BS=comparePL_agg(groundTruth_BS_final,predicted_BS_final)
 
   #print(groundTruth_PL.head(10))
   groundTruth_PL['count']=groundTruth_PL.groupby(['LineItem','filename']).cumcount().astype(str)

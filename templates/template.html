@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+  <head>
+    {% block head %}
+    <link rel="stylesheet" href="{{url_for('static',filename = 'semantic.min.css')}}">
+    <script src="{{url_for('static',filename = 'semantic.min.js')}}"></script>
+    {% endblock %}
+  </head>
+  <body>
+
+
+    {% block body %}
+    <div>
+        <div style="float: left">
+        <image src="{{url_for('static',filename = 'cognext.png')}}" style="padding-right: 200px;" ></image>
+        </div>
+        <div>
+        <h1>Ground Truth and Predicted Comparison</h1>
+        </div>
+
+    </div>
+    {% endblock %}
+    
+  </body>
+</html>
+
+</head>

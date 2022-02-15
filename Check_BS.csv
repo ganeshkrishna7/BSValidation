@@ -1,0 +1,44 @@
+,LineItem,GroundTruth_Year1,Predicted_Year1,Difference_Year1,Header,negative_diff
+0,Land and Buildings,241,0,241,Total Net Fixed Assets,-241
+1,Construction in Progress,10,0,10,Total Net Fixed Assets,-10
+2,"Property, Plant and Equipment",417,246,171,Total Net Fixed Assets,-171
+3,Total Gross Fixed Assets,668,246,422,LineHeading,-422
+4,Accumulated Depreciation and amortisation,-422,0,-422,Total Net Fixed Assets,422
+5,Total Net Fixed Assets,246,246,0,LineHeading,0
+6,Intangibles - Goodwill,12,12,0,Total Non-Current Assets,0
+7,Intangibles - Other,60,204,-144,Total Non-Current Assets,144
+8,Total Net Intangible Assets,72,216,-144,LineHeading,144
+9,Long Term Other Debtors,144,0,144,Total Non-Current Assets,-144
+10,Long Term Tax Recoverable,0,0,0,Total Non-Current Assets,0
+11,Deferred Tax Asset,160,160,0,Total Non-Current Assets,0
+12,Other Non-Operating Non-Current Assets,11,11,0,Total Non-Current Assets,0
+13,Total Non-Current Assets,633,633,0,LineHeading,0
+14,Cash And Bank Balance,246,246,0,Current Assets,0
+15,Trade Debtors,232,0,232,Current Assets,-232
+16,Liquid Assets,478,246,232,LineHeading,-232
+17,Stock - Raw Materials,62,0,62,Current Assets,-62
+18,Stock - Work in Progress,55,0,55,Current Assets,-55
+19,Stock - Finished Goods,119,236,-117,Current Assets,117
+20,Total Stock,236,236,0,LineHeading,0
+21,Accounts Receivable and Prepayments,0,232,-232,Current Assets,232
+22,Other Operating Current Assets,51,51,0,Current Assets,0
+23,Other Non-Operating Current Assets,113,113,0,Current Assets,0
+24,Other Current Assets,164,396,-232,LineHeading,232
+25,Total Current Assets,878,878,0,LineHeading,0
+26,Current Liabilities,0,20,-20,,20
+27,Current Portion - Long Term Debt,396,396,0,Current Liabilities,0
+28,Trade Creditors,149,0,149,Current Liabilities,-149
+29,"Account Payables, Accruals & Provisions",0,149,-149,Current Liabilities,149
+30,Other Operating Current Liabilities,213,213,0,Current Liabilities,0
+31,Other Non-Operating Current Liabilities,20,0,20,Current Liabilities,-20
+32,Total Current Liabilities,778,758,20,LineHeading,-20
+33,Long Term Debt,5,0,5,Non-Current Liabilities,-5
+34,Long Term Accruals,379,5,374,Non-Current Liabilities,-374
+35,Other Non-Current Liabilities,179,558,-379,Non-Current Liabilities,379
+36,Total Non-Current Liabilities,563,563,0,LineHeading,0
+37,Ordinary Shares,617,790,-173,Equity,173
+38,Preference Shares,173,0,173,Equity,-173
+39,Retained Earnings,-200,-200,0,Equity,0
+40,Other Reserves,-411,-411,0,Equity,0
+41,Treasury Stock (-),-9,-9,0,Equity,0
+42,Total Capital and Reserves and Surplus,170,170,0,LineHeading,0

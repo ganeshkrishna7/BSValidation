@@ -1,26 +1,19 @@
-import pandas as pd
-import glob
-import os
-from ancillary import *
+from fuzzywuzzy import fuzz
+temp0="Deferred income tax asset"
+temp0=temp0.lower()
 
+temp1="Deferred charges"
+temp1=temp1.lower()
 
-path = "../temp/"
-xls_files = glob.glob(os.path.join(path, "*.xlsx"))
-print(xls_files)
+temp2="Deferred Tax Asset"
+temp2=temp2.lower()
 
-groundTruth_BS_final=pd.DataFrame()
-groundTruth_PL_final=pd.DataFrame()
-for f in xls_files:
-    # read the csv file
-    df = pd.read_excel(f)
-    groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL=subset(df,None)
-    groundTruth_BS['filename']=f.split("\\")[-1]
-    groundTruth_PL['filename']=f.split("\\")[-1]
-    groundTruth_BS_final=groundTruth_BS_final.append(groundTruth_BS)
-    groundTruth_PL_final=groundTruth_PL_final.append(groundTruth_PL)
-    print(groundTruth_BS_final.tail(5))
+print(fuzz.token_sort_ratio(temp0,temp1)) #incorrect
+print(fuzz.token_sort_ratio(temp0,temp2)) #correct
 
-                
-
-
-
+                    temp=[]
+                    if type(match_LineItem[list(data.keys())[0]] is list):
+                        match_LineItem[list(data.keys())[0]].append(matches.loc[j,'LineItem'])
+                    else:
+                        match_LineItem[list(data.keys())[0]] = [match_LineItem[list(data.keys())[0]]]
+                        [match_LineItem[list(data.keys())[0]]].append(matches.loc[j,'LineItem'])

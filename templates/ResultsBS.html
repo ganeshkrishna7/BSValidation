@@ -1,8 +1,12 @@
 <html lang="en">
 <head>
+    <script src="{{url_for('static',filename = 'jquery-3.6.0.min.js')}}"></script>
+  <link rel="stylesheet" href="{{url_for('static',filename = 'semantic.min.css')}}">
+  <script src="{{url_for('static',filename = 'semantic.min.js')}}"></script>
+
 <style>
 body{ font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;}
-table.dataframe, .dataframe th, .dataframe td {
+table, th, td {
   border: none;
   border-bottom: 1px solid #C8C8C8;
   border-collapse: collapse;
@@ -55,6 +59,11 @@ tr:hover            { background-color: #ffff99;}
   border: 1px solid #ccc;
   border-top: none;
 }
+
+#FullBS td:last-child{
+  color: red;
+  font-weight: bold;
+}
 </style>
 <script>
     function openTab(evt, TabName) {
@@ -80,43 +89,73 @@ tr:hover            { background-color: #ffff99;}
 
 </script>
 </head>
-<div>
-<div style="float: left">
-<image src="{{url_for('static',filename = 'aptivaa.png')}}" style="padding-right: 200px;" ></image>
-</div>
-<div>
-<h1>Ground Truth and Predicted B/S Comparison</h1>
-</div>
-</div>
 
-<form method="POST" action="{{url_for('callCompareBS')}}">
-  <i><p>Enter the Filename</p></i>
-  <input name="text" style="padding: 5px 20px;"">
-  <input type="submit" name="submit" style="background-color: #a9cdf7; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-</form>
+<body style ="background-color: #F7F9F9; margin-left:3%; margin-right:3%;">
+  <div class="ui three column middle aligned grid">
+    <div class = "five wide column">
+      <image src="{{url_for('static',filename = 'cognext.png')}}" style="padding-right: 200px;" ></image>
+    </div>
 
-<div style="text-align: left;">
-<a href="{{url_for('callComparePL')}}">
-  <input type="button" value="P&L Recon" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-</a>
-<a href="{{url_for('aggregate')}}">
-  <input type="button" value="Aggregated Results" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-</a>
-</div>
+    <div class = "seven wide column">
+      <h2>Ground Truth and Predicted Comparison</h2>
+    </div>
+
+    <div class = "four wide column">
+      <form method="POST" action="{{url_for('callCompareBS')}}">
+        <div class="ui category search">
+          <div class="ui icon input">
+            <input class="prompt" name="text" style="margin-top: 5%;" placeholder="Enter the Filename">
+          </div>
+          <div class="results"></div>
+          <button class="circular ui icon button" type="submit" name="submit" >
+            <i class="icon search"></i>
+        </div>     
+      </form>
+    </div>
+  </div>
+
+  <div class="ui inverted menu">
+    <a class="active orange item" href="{{url_for('callCompareBS')}}">
+      BS Recon
+    </a>
+    <a class="item" href="{{url_for('callComparePL')}}">
+      PL Recon
+    </a>
+    <a class="item" href="{{url_for('aggregate')}}">
+      Aggregated Results
+    </a>
+  </div>
 
 <h2>{{filename}}</h2>
+  <div class="ui raised segment">
+    <div class="ui mini two statistics">
+      <div class="orange statistic">
+        <div class="value">
+          <i class="bullseye icon"></i>
+          {{matchrate_res1}}%
+        </div>
+        <div class="label">
+          Year 1 Match Rate
+        </div>
+      </div>
 
-<table style="border:1px solid black; border-collapse: collapse;" >
-  <tr style="border:1px solid black; border-collapse: collapse;">
-    <th style="border:1px solid black; border-collapse: collapse;">Year 1 Match Rate </th>
-    <th style="border:1px solid black; border-collapse: collapse;">Year 2 Match Rate </th>
-  </tr>
-  <tr style="border:1px solid black; border-collapse: collapse;">
-    <td style="border:1px solid black; border-collapse: collapse;"> {{matchrate_res1}}%</td>
-    <td style="border:1px solid black; border-collapse: collapse;">{{matchrate_res2}}%</td>
-  </tr>
-</table>
-<br>
+      <div class="orange statistic">
+        <div class="value">
+          <i class="bullseye icon"></i>
+          {{matchrate_res2}}%
+        </div>
+        <div class="label">
+            Year 2 Match Rate
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  {% if match2 is defined %}
+  <h4>Potential Mistmatches - Sum of Combination of Line Items</h4>
+  {{match2|safe}}
+  {% endif %}
 
 <div class="tab">
     <button class="tablinks" onclick="openTab(event, 'Y1')">Year1</button>
@@ -138,26 +177,25 @@ tr:hover            { background-color: #ffff99;}
         {{ FullBS|safe }}
     </div>
 
+  </div>
+</body>
 <script>
     var table1 = document.getElementById("FullBS"); 
-    console.log(table1.tBodies[0].rows[1].cells[3].innerHTML)
     for (var r = 0, n = table1.tBodies[0].rows.length; r < n; r++) {
             for (var c = 0, m = table1.tBodies[0].rows[r].cells.length; c<m; c++) {
                 if (table1.tBodies[0].rows[r].cells[3].innerHTML!=0)
                 {
-                console.log(table1.tBodies[0].rows[r].innerHTML)
                 table1.tBodies[0].rows[r].cells[3].style.background="#ff8a8a"
                 }
             }
             }
 
     var table1 = document.getElementById("FullBS"); 
-    console.log(table1.tBodies[0].rows[1].cells[3].innerHTML)
         for (var r = 0, n = table1.tBodies[0].rows.length; r < n; r++) {
             for (var c = 0, m = table1.tBodies[0].rows[r].cells.length; c<m; c++) {
                 if (table1.tBodies[0].rows[r].cells[6].innerHTML!=0)
                 {
-                console.log(table1.tBodies[0].rows[r].innerHTML)
+
                 table1.tBodies[0].rows[r].cells[6].style.background="#a36a00"
                 }
             }
@@ -165,4 +203,4 @@ tr:hover            { background-color: #ffff99;}
 
     </script>
 
-    </html>
+</html>

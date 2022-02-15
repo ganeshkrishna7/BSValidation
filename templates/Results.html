@@ -1,5 +1,8 @@
 <html lang="en">
 <head>
+  <script src="{{url_for('static',filename = 'jquery-3.6.0.min.js')}}"></script>
+  <link rel="stylesheet" href="{{url_for('static',filename = 'semantic.min.css')}}">
+  <script src="{{url_for('static',filename = 'semantic.min.js')}}"></script>
 <style>
 body{ font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;}
 table.dataframe, .dataframe th, .dataframe td {
@@ -80,43 +83,66 @@ tr:hover            { background-color: #ffff99;}
 
 </script>
 </head>
-<div>
-<div style="float: left">
-<image src="{{url_for('static',filename = 'aptivaa.png')}}" style="padding-right: 200px;" ></image>
-</div>
-<div>
-<h1>Ground Truth and Predicted P/L Comparison</h1>
-</div>
-</div>
+<body style ="background-color: #F7F9F9; margin-left:3%; margin-right:3%; ">
+  <div class="ui three column middle aligned grid">
+    <div class = "five wide column">
+      <image src="{{url_for('static',filename = 'cognext.png')}}" style="padding-right: 200px;" ></image>
+    </div>
 
-<form method="POST" action="{{url_for('callComparePL')}}">
-    <i><p>Enter the Filename</p></i>
-    <input name="text" style="padding: 5px 20px;"">
-    <input type="submit" name="submit" style="background-color: #a9cdf7; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-</form>
+    <div class = "seven wide column">
+      <h2>Ground Truth and Predicted Comparison</h2>
+    </div>
 
-<div style="text-align: left;">
-  <a href="{{url_for('callCompareBS')}}">
-    <input type="button" value="B/S Recon" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-  </a>
-  <a href="{{url_for('aggregate')}}">
-    <input type="button" value="Aggregated Results" style="background-color: #36db96; border: none;padding: 5px 20px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;">
-  </a>
-</div>
-<h2>{{filename}}</h2>
+    <div class = "four wide column">
+      <form method="POST" action="{{url_for('callComparePL')}}">
+        <div class="ui category search">
+          <div class="ui icon input">
+            <input class="prompt" name="text" style="margin-top: 5%;" placeholder="Enter the Filename">
+          </div>
+          <div class="results"></div>
+          <button class="circular ui icon button" type="submit" name="submit" >
+            <i class="icon search"></i>
+        </div>     
+      </form>
+    </div>
+  </div>
 
-<table style="border:1px solid black; border-collapse: collapse;" >
-  <tr style="border:1px solid black; border-collapse: collapse;">
-    <th style="border:1px solid black; border-collapse: collapse;">Year 1 Match Rate </th>
-    <th style="border:1px solid black; border-collapse: collapse;">Year 2 Match Rate </th>
-  </tr>
-  <tr style="border:1px solid black; border-collapse: collapse;">
-    <td style="border:1px solid black; border-collapse: collapse;"> {{matchrate_res1}}%</td>
-    <td style="border:1px solid black; border-collapse: collapse;">{{matchrate_res2}}%</td>
-  </tr>
-</table>
-<br>
+  <div class="ui inverted menu">
+    <a class="active orange item" href="{{url_for('callComparePL')}}">
+      PL Recon
+    </a>
+    <a class="item" href="{{url_for('callCompareBS')}}">
+      BS Recon
+    </a>
+    <a class="item" href="{{url_for('aggregate')}}">
+      Aggregated Results
+    </a>
+  </div>
 
+  <h2>{{filename}}</h2>
+  <div class="ui raised segment">
+    <div class="ui mini two statistics">
+      <div class="orange statistic">
+        <div class="value">
+          <i class="bullseye icon"></i>
+          {{matchrate_res1}}%
+        </div>
+        <div class="label">
+          Year 1 Match Rate
+        </div>
+      </div>
+
+      <div class="orange statistic">
+        <div class="value">
+          <i class="bullseye icon"></i>
+          {{matchrate_res2}}%
+        </div>
+        <div class="label">
+            Year 2 Match Rate
+        </div>
+      </div>
+    </div>
+  </div>
 
 <div class="tab">
     <button class="tablinks" onclick="openTab(event, 'Y1')">Year1</button>
@@ -138,7 +164,7 @@ tr:hover            { background-color: #ffff99;}
         <h2>Complete PL</h2>
         {{ FullPL|safe }}
     </div>
-
+</body>
 <script>
     var table1 = document.getElementById("FullPL"); 
     console.log(table1.tBodies[0].rows[1].cells[3].innerHTML)
