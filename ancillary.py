@@ -165,8 +165,8 @@ def compareBS(groundTruth_BS,predicted_BS):
 
     groundTruth_BS.rename(columns={'Year1':'GroundTruth_Year1','Year2':'GroundTruth_Year2'}, inplace = True)
     
-    groundTruth_BS,match2=FindIssues(groundTruth_BS)
-    return(compareBS_df_y1,compareBS_df_y2,groundTruth_BS,match2)
+    #groundTruth_BS,match2=FindIssues(groundTruth_BS)
+    return(compareBS_df_y1,compareBS_df_y2,groundTruth_BS)
 
 def matchRate(df,year):
     if year=='Year1':

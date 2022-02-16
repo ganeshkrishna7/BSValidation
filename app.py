@@ -57,16 +57,17 @@ def callCompareBS():
   text=text.replace("xlsx","XLSX")
   predicted=pd.read_excel(os.path.join(path_pred,text),engine='openpyxl',sheet_name="ACCOUNTS",header=None)
   groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL=subset(groundTruth,predicted)
-  ResultscompareBS_Y1,ResultscompareBS_Y2,groundTruth_BS,match2=compareBS(groundTruth_BS,predicted_BS)
-  groundTruth_BS=groundTruth_BS[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2','LineItem to be Mapped']]
+  ResultscompareBS_Y1,ResultscompareBS_Y2,groundTruth_BS=compareBS(groundTruth_BS,predicted_BS)
+  groundTruth_BS=groundTruth_BS[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2']]
 
   matchrate_res1=matchRate(groundTruth_BS,'Year1')
   matchrate_res2=matchRate(groundTruth_BS,'Year2')
   del groundTruth_BS['matchYear']
-  if match2 is not None:
-    return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,match2=match2.to_html(index=False))
-  else:
-      return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2)
+  # if match2 is not None:
+  #   return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,match2=match2.to_html(index=False))
+  # else:
+  #     
+  return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2)
 
 @app.route("/aggregate", methods =["GET", "POST"])
 def aggregate():
