@@ -46,9 +46,9 @@ def subset(groundTruth,predicted):
 def FindIssues(df):
     df['count']=df.groupby(['LineItem']).cumcount().astype(str)
     df['uniqueid']=df['count']+df['LineItem']
-    mapping_file=pd.read_excel("../mappingFile.xlsx",engine='openpyxl',sheet_name="BS_Mapping")
-    mapping_file=mapping_file.drop(['LineItem','Header'],axis=1)
-    df=pd.merge(df,mapping_file,on="uniqueid",how='left')
+    #mapping_file=pd.read_excel("../mappingFile.xlsx",engine='openpyxl',sheet_name="BS_Mapping")
+    #mapping_file=mapping_file.drop(['LineItem','Header'],axis=1)
+    #df=pd.merge(df,mapping_file,on="uniqueid",how='left')
 
     df['negative_diff']=-df['Difference_Year1']
     matches=df.loc[(df['Difference_Year1'].isin(df['negative_diff'])) & (df['Difference_Year1']!=0)]
