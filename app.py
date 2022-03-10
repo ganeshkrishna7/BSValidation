@@ -1,38 +1,92 @@
-from flask import Flask,render_template,request,session
+from flask import Flask,render_template,request,session,flash,redirect,url_for
 import pandas as pd
 import glob
 import os
 from ancillary import *
 import numpy as np
+from werkzeug.utils import secure_filename
+
 pd.options.mode.chained_assignment = None 
 app = Flask(__name__)
 
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 @app.route("/", methods =["GET", "POST"])
 def getFile():
-  session['text']='002'+'.xlsx'
-  path_gt = "../groundTruthCorrected/"
-  path_pred = "../x_out_formulas/"
-  session['path_gt']=path_gt
-  session['path_pred']=path_pred
-  if request.method == "POST":
-    text = request.form['text']
+  print()
+  session.clear()
+  if request.method == 'POST':
+    text = request.form['text_gt']
     session['text']=text
-  return render_template('Home.html')
+
+    filelist = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'],'gt', "*"))
+    for f in filelist:
+      os.remove(f)
+    filelist = glob.glob(os.path.join(app.config['UPLOAD_FOLDER'],'pred', "*"))
+    for f in filelist:
+      os.remove(f)
+      # check if the post request has the file part
+    if 'gt_file' not in request.files:
+        flash('No file part') 
+    file = request.files["gt_file"]
+    if file and allowed_file(file.filename):
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'],'gt', file.filename))
+        path_gt=os.path.join(app.config['UPLOAD_FOLDER'],'gt', file.filename)
+        session['path_gt']=path_gt
+
+    file = request.files["pred_file"]
+    if file.filename == '':
+        flash('No selected file')
+    if file and allowed_file(file.filename):
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'],'pred', file.filename))
+        path_pred=os.path.join(app.config['UPLOAD_FOLDER'],'pred', file.filename)
+        session['path_pred']=path_pred
+    
+    if request.form['BS_PL']=="PL":
+      return redirect(url_for('callComparePL'))
+    else:
+      return redirect(url_for('callCompareBS'))
+  return render_template('Home_v2.html')
 
 @app.route("/PL", methods =["GET", "POST"])
 def callComparePL():
-  path_gt = session.get('path_gt')
-  path_pred = session.get('path_pred')
-
   if request.method == "POST":
-    text = request.form['text'] 
-    text=text+'.xlsx'
-    session['text']=text 
-  else:
+      text = request.form['text'] 
+      text=text+'.xlsx'
+      path_pred = os.path.join(os.path.dirname(app.instance_path),'Database','x_out_formulas')
+      path_gt = os.path.join(os.path.dirname(app.instance_path),'Database','groundTruthCorrected')
+      final_gt=os.path.join(path_gt,text)
+      final_pred=os.path.join(path_pred,text)
+      session['path_gt']=final_gt # for same file to be viewed in both PL and BS
+      session['path_pred']=final_pred
+      
+  elif session.get('path_pred') is None and session.get('path_gt') is None:
+    path_pred = os.path.join(os.path.dirname(app.instance_path),'Database','x_out_formulas')
+    path_gt = os.path.join(os.path.dirname(app.instance_path),'Database','groundTruthCorrected')
     text = session.get('text')
-  groundTruth=pd.read_excel(os.path.join(path_gt,text),engine='openpyxl',sheet_name="Accounts",header=None)
-  text=text.replace("xlsx","XLSX")
-  predicted=pd.read_excel(os.path.join(path_pred,text),engine='openpyxl',sheet_name="ACCOUNTS",header=None)
+    text=text+'.xlsx'
+    final_gt=os.path.join(path_gt,text)
+    final_pred=os.path.join(path_pred,text)
+
+  elif session.get('path_pred') is not None and session.get('path_gt') is None:
+    path_pred = session.get('path_pred')
+    text=os.path.basename(path_pred)
+    path_gt = os.path.join(os.path.dirname(app.instance_path),'Database','groundTruthCorrected')
+    final_gt=os.path.join(path_gt,text)
+    final_pred=path_pred
+
+  elif session.get('path_pred') is not None and session.get('path_gt') is not None:
+    final_pred = session.get('path_pred')
+    final_gt=session.get('path_gt')
+    text=os.path.basename(final_gt)
+  
+  print(final_gt)
+  print(final_pred)
+  groundTruth=pd.read_excel(final_gt,engine='openpyxl',sheet_name="Accounts",header=None)
+  predicted=pd.read_excel(final_pred,engine='openpyxl',sheet_name="ACCOUNTS",header=None)
   groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL=subset(groundTruth,predicted)
   ResultscomparePL_Y1,ResultscomparePL_Y2,groundTruth_PL=comparePL(groundTruth_PL,predicted_PL)
   groundTruth_PL=groundTruth_PL[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2']]
@@ -43,19 +97,39 @@ def callComparePL():
 
 @app.route("/BS", methods =["GET", "POST"])
 def callCompareBS():
-  path_gt = session.get('path_gt')
-  path_pred = session.get('path_pred')
-
   if request.method == "POST":
-    text = request.form['text'] 
-    text=text+'.xlsx'
-    session['text']=text 
-  else:
+      text = request.form['text'] 
+      text=text+'.xlsx'
+      path_pred = os.path.join(os.path.dirname(app.instance_path),'Database','x_out_formulas')
+      path_gt = os.path.join(os.path.dirname(app.instance_path),'Database','groundTruthCorrected')
+      final_gt=os.path.join(path_gt,text)
+      final_pred=os.path.join(path_pred,text)
+      session['path_gt']=final_gt # for same file to be viewed in both PL and BS
+      session['path_pred']=final_pred
+
+  elif session.get('path_pred') is None and session.get('path_gt') is None:
+    path_pred = os.path.join(os.path.dirname(app.instance_path),'Database','x_out_formulas')
+    path_gt = os.path.join(os.path.dirname(app.instance_path),'Database','groundTruthCorrected')
     text = session.get('text')
+    text=text+'.xlsx'
+    final_gt=os.path.join(path_gt,text)
+    final_pred=os.path.join(path_pred,text)
+
+  elif session.get('path_pred') is not None and session.get('path_gt') is None:
+    path_pred = session.get('path_pred')
+    text=os.path.basename(path_pred)
+    path_gt = os.path.join(os.path.dirname(app.instance_path),'Database','groundTruthCorrected')
+    final_gt=os.path.join(path_gt,text)
+    final_pred=path_pred
+
+  elif session.get('path_pred') is not None and session.get('path_gt') is not None:
+    final_pred = session.get('path_pred')
+    final_gt=session.get('path_gt')
+    text=os.path.basename(final_gt)
   
-  groundTruth=pd.read_excel(os.path.join(path_gt,text),engine='openpyxl',sheet_name="Accounts",header=None)
-  text=text.replace("xlsx","XLSX")
-  predicted=pd.read_excel(os.path.join(path_pred,text),engine='openpyxl',sheet_name="ACCOUNTS",header=None)
+  groundTruth=pd.read_excel(final_gt,engine='openpyxl',sheet_name="Accounts",header=None)
+  predicted=pd.read_excel(final_pred,engine='openpyxl',sheet_name="ACCOUNTS",header=None)
+
   groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL=subset(groundTruth,predicted)
   ResultscompareBS_Y1,ResultscompareBS_Y2,groundTruth_BS,match2=compareBS(groundTruth_BS,predicted_BS)
   groundTruth_BS=groundTruth_BS[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2','LineItem to be Mapped']]
@@ -70,8 +144,8 @@ def callCompareBS():
 
 @app.route("/aggregate", methods =["GET", "POST"])
 def aggregate():
-  path_gt = session.get('path_gt')
-  path_pred = session.get('path_pred')
+  path_pred = os.path.join(os.path.dirname(app.instance_path),'Database','x_out_formulas')
+  path_gt = os.path.join(os.path.dirname(app.instance_path),'Database','groundTruthCorrected')
 
   xls_files_gt = glob.glob(os.path.join(path_gt, "*.xlsx"))
   xls_files_gt = [os.path.basename(i).lower() for i in xls_files_gt]
@@ -85,7 +159,7 @@ def aggregate():
   xls_files=list(xls_files_gt.intersection(xls_files_pred))
   xls_files_gt=[os.path.join(path_gt,i) for i in xls_files]
   xls_files_pred=[os.path.join(path_pred,i) for i in xls_files]
-  xls_files_pred=[i.replace("xlsx","XLSX") for i in xls_files_pred]
+  #xls_files_pred=[i.replace("xlsx","XLSX") for i in xls_files_pred]
 
     
   groundTruth_BS_final=pd.DataFrame()
@@ -139,6 +213,10 @@ def aggregate():
 
 app.secret_key = 'super secret key'
 app.config['SESSION_TYPE'] = 'filesystem'
+
+UPLOAD_FOLDER = os.path.join(os.path.dirname(app.instance_path),'upload')
+ALLOWED_EXTENSIONS = {'xls','xlsx'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 if __name__ == "__main__":
   app.run()

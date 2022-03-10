@@ -1,0 +1,60 @@
+<html lang="en">
+<head>
+    <script src="{{url_for('static',filename = 'jquery-3.6.0.min.js')}}"></script>
+  <link rel="stylesheet" href="{{url_for('static',filename = 'semantic.min.css')}}">
+  <script src="{{url_for('static',filename = 'semantic.min.js')}}"></script>
+
+</head>
+
+<body style ="background-color: #F7F9F9; margin-left:1%; margin-right:1%;">
+    <div class="ui grid">
+        <div class="row">
+            <div style="float: left">
+            <image src="{{url_for('static',filename = 'cognext.png')}}" style="padding-right: 200px;" ></image>
+            </div>
+        </div>
+    </div>
+
+
+            <div class="ui placeholder segment">
+                <div class="ui two column very relaxed stackable grid">
+                    <div class="ui vertical divider">Or</div>
+                    <div class="column">
+                        <form method="POST" class="ui form" style="margin-top: 10%;" enctype=multipart/form-data>
+                            <!--
+                            <div class="ui left action input">
+                                <button class="ui labeled icon button" href="{{url_for('upload_file')}}">
+                                    <i class="upload icon"></i>
+                                    Upload
+                                </button>
+                                <input type="text">
+                            </div>-->
+                            <input type=file name=file>
+                            <input type=submit value=Upload>
+                        </div>
+                    </div> 
+
+                    <div class="middle aligned column">
+                        <div class="row">
+                            <div class="ui left action input">
+                                <button class="ui labeled icon button">
+                                    <i class="upload icon"></i>
+                                    Upload
+                                </button>
+                                <input type="text">
+                            </div> 
+                        </div>  
+                        <div class="row">
+                            OR
+                        </div>
+                        <div class="row">
+                            <div class="ui input">
+                                <input type="text">
+                            </div> 
+                        </div>
+                    </div>
+                </div>    
+            </div>
+
+</body>
+</html>

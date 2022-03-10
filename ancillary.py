@@ -70,20 +70,20 @@ def FindIssues(df):
         match_LineItem[i]=','.join(match_LineItem[i])
 
     temp=pd.DataFrame.from_dict(match_LineItem,orient ='index')
-    temp['LineItem'] = temp.index
-    temp=temp.reset_index(drop=True)
-    temp.rename(columns={0:'LineItem to be Mapped'}, inplace = True)
-    temp=temp[['LineItem','LineItem to be Mapped']]
-    #print(temp)
+    
+    if len(temp)==0:
+        df['LineItem to be Mapped'] = ''
+    else:    
+        temp['LineItem'] = temp.index
+        temp=temp.reset_index(drop=True)
+        temp.rename(columns={0:'LineItem to be Mapped'}, inplace = True)
+        print(temp)
+        temp=temp[['LineItem','LineItem to be Mapped']]
+        #print(temp)
 
-    df=pd.merge(df,temp,on="LineItem",how='left')
-    #matches=matches[['LineItem']]
-    #matches.insert(1, "LineItem to be Mapped", "LineItem to be Mapped")
-
-    #df=pd.merge(df,matches,on="LineItem",how='left')
-    #print(df.columns)
-    df.drop(['uniqueid', 'negative_diff','count'],axis=1)
-    df['LineItem to be Mapped'] = df['LineItem to be Mapped'].fillna('')
+        df=pd.merge(df,temp,on="LineItem",how='left')
+        df.drop(['uniqueid', 'negative_diff','count'],axis=1)
+        df['LineItem to be Mapped'] = df['LineItem to be Mapped'].fillna('')
     
 
     temp=df[(df['Difference_Year1']!=0) & (~df['LineItem'].isin(matches['LineItem']))].reset_index(drop=True) 
@@ -284,3 +284,8 @@ def comparePL_agg(groundTruth_BS,predicted_BS):
     groundTruth_BS.rename(columns={'Year1':'GroundTruth_Year1','Year2':'GroundTruth_Year2'}, inplace = True)
     
     return(compareBS_df_y1,compareBS_df_y2,groundTruth_BS)
+
+def onetomany(df):
+    df=df.set_index('excelmapping').T.to_dict('list')
+    print(df)
+    return df

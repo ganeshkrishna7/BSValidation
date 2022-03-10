@@ -1,0 +1,94 @@
+<html lang="en">
+<head>
+    <script src="{{url_for('static',filename = 'jquery-3.6.0.min.js')}}"></script>
+  <link rel="stylesheet" href="{{url_for('static',filename = 'semantic.min.css')}}">
+  <script src="{{url_for('static',filename = 'semantic.min.js')}}"></script>
+
+<script>
+function getFileName(myFile){
+    text=myFile.getAttribute('id')
+    text=text.substr(0,text.search("_"))
+    text="filename_".concat(text)
+    var file = myFile.files[0];  
+    var filename = file.name;
+    document.getElementById(text).value=filename.concat(" has been uploaded");
+    document.getElementById(text).style.color ='#006400'
+}
+
+
+</script>
+
+</head>
+
+<body style ="background-color:#F5F5F5; margin-left:1%; margin-right:1%;">
+    <div class="ui grid ">
+        <div class="row">
+            <div style="float: left">
+            <image src="{{url_for('static',filename = 'cognext.png')}}" style="padding-right: 200px;" ></image>
+            </div>
+        </div>
+    
+
+        <div class="row">
+            <div class="ui column grid">
+                <div class="six wide centered column" style="background-color: white; border-style:solid;border-color: #C0C0C0; border-width:0px 0px 3px 1px;">
+                    <h4 style="position: relative; left: 125px;"><i class="big puzzle piece icon">Comparator</i></h4><br>
+                    <form method=post enctype=multipart/form-data class="ui form">
+                        <h4 class="ui dividing header">Predicted Files</h4>
+                        
+                        
+                        <div class="eight wide field" style="position: relative; left:100px">
+                            <label for="pred_file" class="ui icon orange button"> 
+                            <i class="upload icon"></i> Upload Predicted File </label>
+                            <input type=file name=pred_file id=pred_file style="display: none;" onchange="getFileName(this)">
+                            <input type=text id=filename_pred name=filename_pred value="No File has been Uploaded" style="color: red; border-style: none;">
+                        </div>
+                        
+                        <h4 class="ui dividing header">Groundtruth Files</h4>
+                        <div class="three fields">   
+                        <div class="eight wide field">
+                            <label for="gt_file" class="ui icon orange button"> 
+                            <i class="upload icon"></i> Upload GroundTruth File </label>
+                            <input type=file name=gt_file id=gt_file style="display: none;" onchange="getFileName(this)">
+                            <input type=text id=filename_gt name=filename_gt value="No File has been Uploaded" style="color: red; border-style: none;">
+                        </div>
+                        <div class="two wide field">
+                        <button class="circular ui icon button">
+                            OR
+                        </button>
+                        </div>
+
+                        <div class="six wide field">
+                            <input type="text" name="text_gt" placeholder="Enter the Filename">
+                        </div>
+                        </div>
+                         <br>
+                        <div class="fields">
+                            <div class="four wide field"><input type=submit value=Submit class="ui teal button"></div>
+                            <div class="seven wide field"><input type=button value="Aggregated Results" class="ui blue button"></div>
+                            
+                            <div class="fields">
+                                
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="BS_PL" checked="" tabindex="0" class="hidden" value="PL">
+                                    <label>PL</label>
+                                </div>     
+                                &nbsp;&nbsp;
+
+
+                                <div class="ui radio checkbox">
+                                    <input type="radio" name="BS_PL" checked=0 tabindex="0" class="hidden" value="BS">
+                                    <label>BS</label>
+                                </div>
+
+                            </div>
+                    </form>
+                </div>  
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    $('.ui.radio.checkbox').checkbox();
+</script>
+</html>

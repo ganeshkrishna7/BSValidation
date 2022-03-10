@@ -13,6 +13,8 @@ table.dataframe, .dataframe th, .dataframe td {
   padding: 10px;
   margin-bottom: 40px;
   font-size: 0.9em;
+  text-align: center; 
+  vertical-align: middle;
 }
 
 th {
@@ -83,7 +85,7 @@ tr:hover            { background-color: #ffff99;}
 
 </script>
 </head>
-<body style ="background-color: #F7F9F9; margin-left:3%; margin-right:3%; ">
+<body style ="background-color: #F5F5F5; margin-left:3%; margin-right:3%; ">
   <div class="ui three column middle aligned grid">
     <div class = "five wide column">
       <image src="{{url_for('static',filename = 'cognext.png')}}" style="padding-right: 200px;" ></image>
@@ -108,6 +110,9 @@ tr:hover            { background-color: #ffff99;}
   </div>
 
   <div class="ui inverted menu">
+    <a class="item" href="{{url_for('getFile')}}">
+      <i class="home icon"></i>
+    </a>
     <a class="active orange item" href="{{url_for('callComparePL')}}">
       PL Recon
     </a>
