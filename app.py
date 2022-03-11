@@ -111,26 +111,24 @@ def commonCode():
 
 @app.route("/comparator/PL", methods =["GET", "POST"])
 def callComparePL():
-  try:
-    groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL,text,bsdebug,bsdetailed,pldebug,pldetailed=commonCode()
-    ResultscomparePL_Y1,ResultscomparePL_Y2,groundTruth_PL=comparePL(groundTruth_PL,predicted_PL)
-    groundTruth_PL=groundTruth_PL[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2']]
-    
-    if pldebug.shape[0] ==0:
-      pldebug = None
-    else:
-      pldetailed=pldetailed.to_html(index=False)
-      pldebug=pldebug.to_html(index=False)
-    
-    matchrate_res1=matchRate(groundTruth_PL,'Year1')
-    matchrate_res2=matchRate(groundTruth_PL,'Year2')
-    del groundTruth_PL['matchYear']
-
-    
-    
-    return render_template('Results.html',ResultscomparePL_Y1=ResultscomparePL_Y1.to_html(index=False),ResultscomparePL_Y2=ResultscomparePL_Y2.to_html(index=False),FullPL=groundTruth_PL.to_html(table_id="FullPL",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,pldebug=pldebug,pldetailed=pldetailed)
-  except:
-    return redirect(url_for('getFile'))
+#try:
+  groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL,text,bsdebug,bsdetailed,pldebug,pldetailed=commonCode()
+  ResultscomparePL_Y1,ResultscomparePL_Y2,groundTruth_PL=comparePL(groundTruth_PL,predicted_PL)
+  groundTruth_PL=groundTruth_PL[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2']]
+  
+  if pldebug.shape[0] ==0:
+    pldebug = None
+  else:
+    pldetailed=pldetailed.to_html(index=False)
+    pldebug=pldebug.to_html(index=False)
+  
+  matchrate_res1=matchRate(groundTruth_PL,'Year1')
+  matchrate_res2=matchRate(groundTruth_PL,'Year2')
+  del groundTruth_PL['matchYear']  
+  
+  return render_template('Results.html',ResultscomparePL_Y1=ResultscomparePL_Y1.to_html(index=False),ResultscomparePL_Y2=ResultscomparePL_Y2.to_html(index=False),FullPL=groundTruth_PL.to_html(table_id="FullPL",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,pldebug=pldebug,pldetailed=pldetailed)
+#except:
+#    return redirect(url_for('getFile'))
 
 @app.route("/comparator/BS", methods =["GET", "POST"])
 def callCompareBS():

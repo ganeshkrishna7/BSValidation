@@ -153,7 +153,7 @@ tr:hover            { background-color: #ffff99;}
     <button class="tablinks" onclick="openTab(event, 'Y1')">Year1</button>
     <button class="tablinks" onclick="openTab(event, 'Y2')">Year2</button>
     <button class="tablinks" onclick="openTab(event, 'Full')">Complete PL</button>
-    {% if pldebug|length > 0 %}
+    {% if pldebug is not none %}
     <button class="tablinks" onclick="openTab(event, 'debugPL')">Debug PL</button>
     <button class="tablinks" onclick="openTab(event, 'detailedPL')">Detailed PL</button>
     {% endif %}
@@ -174,7 +174,7 @@ tr:hover            { background-color: #ffff99;}
         {{ FullPL|safe }}
     </div>
 
-    {% if pldebug|length > 0 %}
+    {% if pldebug is not none %}
     <div id="debugPL" class="tabcontent" style="display: none;">
       <h2>Debug PL</h2>
       {{ pldebug|safe }}
