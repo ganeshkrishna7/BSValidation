@@ -66,6 +66,7 @@ tr:hover            { background-color: #ffff99;}
   color: red;
   font-weight: bold;
 }
+
 </style>
 <script>
     function openTab(evt, TabName) {
@@ -166,6 +167,10 @@ tr:hover            { background-color: #ffff99;}
     <button class="tablinks" onclick="openTab(event, 'Y1')">Year1</button>
     <button class="tablinks" onclick="openTab(event, 'Y2')">Year2</button>
     <button class="tablinks" onclick="openTab(event, 'Full')">Complete BS</button>
+    {% if bsdebug is not none %}
+    <button class="tablinks" onclick="openTab(event, 'debugBS')">Debug BS</button>
+    <button class="tablinks" onclick="openTab(event, 'detailedBS')">Detailed BS</button>
+    {% endif %}
 </div>   
     <div id="Y1" class="tabcontent">
     <h2>Year 1 Comparison</h2>
@@ -181,6 +186,18 @@ tr:hover            { background-color: #ffff99;}
         <h2>Complete BS</h2>
         {{ FullBS|safe }}
     </div>
+
+    {% if bsdebug is not none %}
+    <div id="debugBS" class="tabcontent" style="display: none;">
+      <h2>Debug BS</h2>
+      {{ bsdebug|safe }}
+    </div>
+
+    <div id="detailedBS" class="tabcontent" style="display: none;">
+      <h2>Detailed BS</h2>
+      {{ bsdetailed|safe }}
+    </div>
+    {% endif %}
 
   </div>
 </body>

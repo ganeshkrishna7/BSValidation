@@ -60,6 +60,7 @@ tr:hover            { background-color: #ffff99;}
   border: 1px solid #ccc;
   border-top: none;
 }
+
 </style>
 <script>
     function openTab(evt, TabName) {
@@ -148,11 +149,14 @@ tr:hover            { background-color: #ffff99;}
       </div>
     </div>
   </div>
-
 <div class="tab">
     <button class="tablinks" onclick="openTab(event, 'Y1')">Year1</button>
     <button class="tablinks" onclick="openTab(event, 'Y2')">Year2</button>
     <button class="tablinks" onclick="openTab(event, 'Full')">Complete PL</button>
+    {% if pldebug|length > 0 %}
+    <button class="tablinks" onclick="openTab(event, 'debugPL')">Debug PL</button>
+    <button class="tablinks" onclick="openTab(event, 'detailedPL')">Detailed PL</button>
+    {% endif %}
 </div>  
   
     <div id="Y1" class="tabcontent">
@@ -169,6 +173,19 @@ tr:hover            { background-color: #ffff99;}
         <h2>Complete PL</h2>
         {{ FullPL|safe }}
     </div>
+
+    {% if pldebug|length > 0 %}
+    <div id="debugPL" class="tabcontent" style="display: none;">
+      <h2>Debug PL</h2>
+      {{ pldebug|safe }}
+    </div>
+
+    <div id="detailedPL" class="tabcontent" style="display: none;">
+      <h2>Detailed PL</h2>
+      {{ pldetailed|safe }}
+    </div>
+    {% endif %}
+
 </body>
 <script>
     var table1 = document.getElementById("FullPL"); 

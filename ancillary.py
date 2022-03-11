@@ -285,8 +285,28 @@ def comparePL_agg(groundTruth_BS,predicted_BS):
     
     return(compareBS_df_y1,compareBS_df_y2,groundTruth_BS)
 
-def onetomany(df):
-    df=df.set_index('excelmapping').T.to_dict('list')
-    #print(df)
-    return df
+def other_info(bsdebug,bsdetailed,pldebug,pldetailed):
+    bsdebug.columns=bsdebug.columns.str.title()
+    bsdebug=bsdebug.loc[:, 'Tid':'Year2_Sum']
+    bsdebug=bsdebug.dropna(axis=0,how='all')
+    bsdebug=bsdebug.fillna('')
+
+    pldebug.columns=pldebug.columns.str.title()
+    pldebug=pldebug.loc[:, 'Tid':'Year2_Sum']
+    pldebug=pldebug.dropna(axis=0,how='all')
+    pldebug=pldebug.fillna('')
+
+    bsdetailed.columns=bsdetailed.columns.str.title()
+    bsdetailed=bsdetailed.loc[:, 'Lineitem':'Year2']
+    bsdetailed=bsdetailed.dropna(axis=0,how='all')
+    bsdetailed=bsdetailed.fillna('')
+
+    pldetailed.columns=pldetailed.columns.str.title()
+    pldetailed=pldetailed.loc[:, 'Lineitem':'Year2']
+    pldetailed=pldetailed.dropna(axis=0,how='all')
+    pldetailed=pldetailed.fillna('')
+
+    return(bsdebug,bsdetailed,pldebug,pldetailed)
+
+
 
