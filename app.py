@@ -88,9 +88,7 @@ def commonCode():
       final_pred = session.get('path_pred')
       final_gt=session.get('path_gt')
       text=os.path.basename(final_gt)
-  
-    #print(final_gt)
-    #print(final_pred)
+
     final_pred = final_pred.replace("xlsx","XLSX")
     predicted=None
     groundTruth=pd.read_excel(final_gt,engine='openpyxl',sheet_name="Accounts",header=None)
@@ -111,47 +109,47 @@ def commonCode():
 
 @app.route("/comparator/PL", methods =["GET", "POST"])
 def callComparePL():
-#try:
-  groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL,text,bsdebug,bsdetailed,pldebug,pldetailed=commonCode()
-  ResultscomparePL_Y1,ResultscomparePL_Y2,groundTruth_PL=comparePL(groundTruth_PL,predicted_PL)
-  groundTruth_PL=groundTruth_PL[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2']]
-  
-  if pldebug.shape[0] ==0:
-    pldebug = None
-  else:
-    pldetailed=pldetailed.to_html(index=False)
-    pldebug=pldebug.to_html(index=False)
-  
-  matchrate_res1=matchRate(groundTruth_PL,'Year1')
-  matchrate_res2=matchRate(groundTruth_PL,'Year2')
-  del groundTruth_PL['matchYear']  
-  
-  return render_template('Results.html',ResultscomparePL_Y1=ResultscomparePL_Y1.to_html(index=False),ResultscomparePL_Y2=ResultscomparePL_Y2.to_html(index=False),FullPL=groundTruth_PL.to_html(table_id="FullPL",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,pldebug=pldebug,pldetailed=pldetailed)
-#except:
-#    return redirect(url_for('getFile'))
+  try:
+    groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL,text,bsdebug,bsdetailed,pldebug,pldetailed=commonCode()
+    ResultscomparePL_Y1,ResultscomparePL_Y2,groundTruth_PL=comparePL(groundTruth_PL,predicted_PL)
+    groundTruth_PL=groundTruth_PL[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2']]
+    
+    if pldebug.shape[0] ==0:
+      pldebug = None
+    else:
+      pldetailed=pldetailed.to_html(index=False)
+      pldebug=pldebug.to_html(index=False)
+    
+    matchrate_res1=matchRate(groundTruth_PL,'Year1')
+    matchrate_res2=matchRate(groundTruth_PL,'Year2')
+    del groundTruth_PL['matchYear']  
+    
+    return render_template('Results.html',ResultscomparePL_Y1=ResultscomparePL_Y1.to_html(index=False),ResultscomparePL_Y2=ResultscomparePL_Y2.to_html(index=False),FullPL=groundTruth_PL.to_html(table_id="FullPL",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,pldebug=pldebug,pldetailed=pldetailed)
+  except:
+    return redirect(url_for('getFile'))
 
 @app.route("/comparator/BS", methods =["GET", "POST"])
 def callCompareBS():
-#try:
-  groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL,text,bsdebug,bsdetailed,pldebug,pldetailed=commonCode()
-  ResultscompareBS_Y1,ResultscompareBS_Y2,groundTruth_BS,match2=compareBS(groundTruth_BS,predicted_BS)
-  groundTruth_BS=groundTruth_BS[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2','LineItem to be Mapped']]
+  try:
+    groundTruth_BS,groundTruth_PL,predicted_BS,predicted_PL,text,bsdebug,bsdetailed,pldebug,pldetailed=commonCode()
+    ResultscompareBS_Y1,ResultscompareBS_Y2,groundTruth_BS,match2=compareBS(groundTruth_BS,predicted_BS)
+    groundTruth_BS=groundTruth_BS[['LineItem','GroundTruth_Year1','Predicted_Year1','Difference_Year1','GroundTruth_Year2','Predicted_Year2','Difference_Year2','LineItem to be Mapped']]
 
-  if bsdebug.shape[0] ==0:
-    bsdebug = None
-  else:
-    bsdetailed=bsdetailed.to_html(index=False)
-    bsdebug=bsdebug.to_html(index=False)
+    if bsdebug.shape[0] ==0:
+      bsdebug = None
+    else:
+      bsdetailed=bsdetailed.to_html(index=False)
+      bsdebug=bsdebug.to_html(index=False)
 
-  matchrate_res1=matchRate(groundTruth_BS,'Year1')
-  matchrate_res2=matchRate(groundTruth_BS,'Year2')
-  del groundTruth_BS['matchYear']
-  if match2 is not None:
-    return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,match2=match2.to_html(index=False),bsdebug=bsdebug,bsdetailed=bsdetailed)
-  else:
-      return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,bsdebug=bsdebug,bsdetailed=bsdetailed)
-#  except:
-#    return redirect(url_for('getFile'))
+    matchrate_res1=matchRate(groundTruth_BS,'Year1')
+    matchrate_res2=matchRate(groundTruth_BS,'Year2')
+    del groundTruth_BS['matchYear']
+    if match2 is not None:
+      return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,match2=match2.to_html(index=False),bsdebug=bsdebug,bsdetailed=bsdetailed)
+    else:
+        return render_template('ResultsBS.html',ResultscompareBS_Y1=ResultscompareBS_Y1.to_html(index=False),ResultscompareBS_Y2=ResultscompareBS_Y2.to_html(index=False),FullBS=groundTruth_BS.to_html(table_id="FullBS",index=False),filename=text,matchrate_res1=matchrate_res1,matchrate_res2=matchrate_res2,bsdebug=bsdebug,bsdetailed=bsdetailed)
+  except:
+    return redirect(url_for('getFile'))
 
 @app.route("/comparator/aggregate", methods =["GET", "POST"])
 def aggregate():
