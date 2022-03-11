@@ -77,7 +77,7 @@ def FindIssues(df):
         temp['LineItem'] = temp.index
         temp=temp.reset_index(drop=True)
         temp.rename(columns={0:'LineItem to be Mapped'}, inplace = True)
-        print(temp)
+        #print(temp)
         temp=temp[['LineItem','LineItem to be Mapped']]
         #print(temp)
 
@@ -287,5 +287,6 @@ def comparePL_agg(groundTruth_BS,predicted_BS):
 
 def onetomany(df):
     df=df.set_index('excelmapping').T.to_dict('list')
-    print(df)
+    #print(df)
     return df
+
